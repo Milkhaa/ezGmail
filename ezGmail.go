@@ -225,12 +225,17 @@ func (gs *GmailService) GetMessages() []*GmailMessage {
 func (gs *GmailService) GetMessagesRaw() []*gmail.Message {
 	var messages []*gmail.Message
 	for _, ii := range (gs.GetListOnly().Messages) {
-		m, err := gs.srv.Users.Messages.Get(gs.sUser, ii.Id).Do()
+		//m, err := gs.srv.Users.Messages.Get(gs.sUser, ii.Id).Do()
+		modifyMessageRequest := gmail.ModifyMessageRequest{
+			RemoveLabelIds: []string{"UNREAD"},
+		}
+		m, err := gs.srv.Users.Messages.Modify(gs.sUser,ii.Id,&modifyMessageRequest).Do()
 		if err != nil {
 			log.Fatalf("Unable to retrieve email messages %v", err)
 		}
 		messages = append(messages, m)
 	}
+	
 	return messages
 }
 
