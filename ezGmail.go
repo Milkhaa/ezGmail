@@ -133,6 +133,7 @@ func (gs *GmailService) InitSrvWithCrentialAt(credentialFilePath string) {
 	}
 	client := getClient(ctx, config)
 
+
 	gs.srv, err = gmail.New(client)
 	if err != nil {
 		log.Fatalf("Unable to retrieve gmail Client %v", err)
@@ -225,11 +226,7 @@ func (gs *GmailService) GetMessages() []*GmailMessage {
 func (gs *GmailService) GetMessagesRaw() []*gmail.Message {
 	var messages []*gmail.Message
 	for _, ii := range (gs.GetListOnly().Messages) {
-		//m, err := gs.srv.Users.Messages.Get(gs.sUser, ii.Id).Do()
-		modifyMessageRequest := gmail.ModifyMessageRequest{
-			RemoveLabelIds: []string{"UNREAD"},
-		}
-		m, err := gs.srv.Users.Messages.Modify(gs.sUser,ii.Id,&modifyMessageRequest).Do()
+		m, err := gs.srv.Users.Messages.Get(gs.sUser, ii.Id).Do()
 		if err != nil {
 			log.Fatalf("Unable to retrieve email messages %v", err)
 		}
